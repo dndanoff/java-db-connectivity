@@ -9,10 +9,10 @@ import com.github.dndanoff.db.repository.StudentRepository;
 
 @Component
 @Order(2)
-public class SpringJpaDemoRunner implements CommandLineRunner {
+public class CustomJpaMethodsDemo implements CommandLineRunner {
     private StudentRepository repo;
 
-    public SpringJpaDemoRunner(StudentRepository repo) {
+    public CustomJpaMethodsDemo(StudentRepository repo) {
         this.repo = repo;
     }
 
@@ -22,8 +22,14 @@ public class SpringJpaDemoRunner implements CommandLineRunner {
             Student student = new Student("M-test1");
             student.setFirstName("Denis");
             student.setLastName("Danov");
-
             repo.save(student);
+
+            student.setLastName("Nikolaev Danov");
+            repo.save(student);
+
+            System.out.println(repo.customFind("M-test1"));
+            System.out.println(repo.customNativeFind("M-test1"));
+            System.out.println(repo.totallyCustomMethod("M-test1"));
         }
     }
 }

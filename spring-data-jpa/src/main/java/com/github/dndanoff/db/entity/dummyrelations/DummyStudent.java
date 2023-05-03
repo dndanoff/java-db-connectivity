@@ -1,29 +1,23 @@
-package com.github.dndanoff.db.entity;
+package com.github.dndanoff.db.entity.dummyrelations;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.HashSet;
-import java.util.Set;
 
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Index;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import jakarta.persistence.Transient;
 
 @Entity
-@Table(name = "STUDENTS", indexes = {
+@Table(name = "DUMMY_STUDENTS", indexes = {
         @Index(name = "facultyNum_uniqueIndex", columnList = "facultyNumber", unique = true)
 })
-public class Student {
+public class DummyStudent {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -38,21 +32,15 @@ public class Student {
     @Column(columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
     private LocalDateTime created;
     private LocalDateTime deleted;
-    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "details_id")
-    private Details details;
     @ManyToOne
-    @JoinColumn(name = "faculty_id")
-    private Faculty faculty;
-    @ManyToMany(mappedBy = "students")
-    private Set<Course> courses = new HashSet<>();
+    private DummyFaculty faculty;
 
     // natural key is passed here so that it has value for new entities
-    public Student(String facultyNumber) {
+    public DummyStudent(String facultyNumber) {
         this.facultyNumber = facultyNumber;
     }
 
-    protected Student() {
+    protected DummyStudent() {
     }
 
     public String toString() {
@@ -60,7 +48,7 @@ public class Student {
                 firstName,
                 lastName,
                 facultyNumber,
-                created != null ? created.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME) : null,
+                created.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME),
                 deleted != null ? deleted.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME) : null);
     }
 
@@ -70,32 +58,14 @@ public class Student {
     public boolean equals(Object o) {
         if (this == o)
             return true;
-        if (!(o instanceof Student))
+        if (!(o instanceof DummyStudent))
             return false;
-        return facultyNumber.equals(((Student) o).getFacultyNumber());
+        return facultyNumber.equals(((DummyStudent) o).getFacultyNumber());
     }
 
     @Override
     public int hashCode() {
         return getFacultyNumber().hashCode();
-    }
-
-    public Faculty getFaculty() {
-        return faculty;
-    }
-
-    public void setFaculty(Faculty faculty) {
-        this.faculty = faculty;
-    }
-
-    public Set<Course> getCourses() {
-        return new HashSet<>(courses);
-    }
-
-    public void setCourses(Set<Course> courses) {
-        if (courses != null) {
-            this.courses = courses;
-        }
     }
 
     public Long getId() {
@@ -144,20 +114,5 @@ public class Student {
 
     public void setDeleted(LocalDateTime deleted) {
         this.deleted = deleted;
-    }
-
-    public Details getDetails() {
-        return details;
-    }
-
-    public void setDetails(Details details) {
-        if (details == null) {
-            if (this.details != null) {
-                this.details.setStudent(null);
-            }
-        } else {
-            details.setStudent(this);
-        }
-        this.details = details;
     }
 }

@@ -1,4 +1,4 @@
-package com.github.dndanoff.db.entity;
+package com.github.dndanoff.db.entity.dummyrelations;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -9,28 +9,27 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "FACULTIES")
-public class Faculty {
+@Table(name = "DUMMY_FACULTIES")
+public class DummyFaculty {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Column(length = 255, nullable = false, unique = true)
     private String name;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "faculty", orphanRemoval = true)
-    private Set<Student> students = new HashSet<>();
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<DummyStudent> students = new HashSet<>();
 
-    public void addStudent(Student student) {
+    public void addStudent(DummyStudent student) {
         students.add(student);
-        student.setFaculty(this);
     }
 
-    public void removeStudent(Student student) {
+    public void removeStudent(DummyStudent student) {
         students.remove(student);
-        student.setFaculty(null);
     }
 
     public Long getId() {
@@ -49,11 +48,11 @@ public class Faculty {
         this.name = name;
     }
 
-    public Set<Student> getStudents() {
+    public Set<DummyStudent> getStudents() {
         return new HashSet<>(students);
     }
 
-    public void setStudents(Set<Student> students) {
+    public void setStudents(Set<DummyStudent> students) {
         if (students != null) {
             this.students = students;
         }

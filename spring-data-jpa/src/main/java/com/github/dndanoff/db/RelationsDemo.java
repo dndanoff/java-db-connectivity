@@ -4,14 +4,16 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
+import com.github.dndanoff.db.entity.dummyrelations.*;
+
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
 
 @Transactional
 @Component
-@Order(3)
-public class SpringTransactionDemo implements CommandLineRunner {
+@Order(1)
+public class RelationsDemo implements CommandLineRunner {
 
     @PersistenceContext
     private EntityManager em;
@@ -19,11 +21,15 @@ public class SpringTransactionDemo implements CommandLineRunner {
     @Override
     public void run(String... args) {
         if (false) {
-            StudentDemoEntity student = new StudentDemoEntity();
+            DummyFaculty fmi = new DummyFaculty();
+            fmi.setName("FMI");
+
+            DummyStudent student = new DummyStudent("M_TEST");
             student.setFirstName("Denis");
             student.setLastName("Danov");
-            student.setFacultyNumber("M_TEST@@@");
-            em.persist(student);
+            fmi.addStudent(student);
+
+            em.persist(fmi);
         }
     }
 }
